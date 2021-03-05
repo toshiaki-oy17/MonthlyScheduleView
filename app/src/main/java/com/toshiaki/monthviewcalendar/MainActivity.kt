@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() {
                     mapUpdated["$year-$currMonthString-$iString"] = Data(
                             // PUT YOUR CUSTOM LAYOUT
                             R.layout.event_item_list,
-                            // PUT YOUR CUSTOM CLASS
+                            // PUT YOUR DATA CLASS
                             Event("Maths", "Lesson ${i + 1}"),
                             // INITIALIZE YOUR VIEW HERE INSIDE DAY SCHEDULE VIEW BASED ON CUSTOM LAYOUT
                             object : OnInitialization<Event> {
