@@ -7,9 +7,10 @@ import androidx.appcompat.app.AppCompatActivity
 import com.toshiaki.lib.Data
 import com.toshiaki.lib.MonthlyScheduleView
 import com.toshiaki.lib.OnInitialization
-import com.toshiaki.lib.Schedule
 import com.toshiaki.monthviewcalendar.databinding.ActivityMainBinding
+import java.time.Year
 import java.util.*
+import kotlin.collections.HashMap
 
 class MainActivity : AppCompatActivity() {
 
@@ -41,7 +42,36 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
+        binding.msvSchedule.setOnUpdateSchedule(object : MonthlyScheduleView.Update {
+            override fun onUpdateSchedule(year: Int, month: Int) {
+                val mapUpdated = hashMapOf<String, Data<Event>>()
+                for (i in 0..30) {
+                    val iString = if (i + 1 < 10) "0${i + 1}" else "${i + 1}"
+                    val currMonthString = if (month + 1 < 10) "0${month + 1}" else "${month + 1}"
+                    mapUpdated["$year-$currMonthString-$iString"] = Data(
+                            // PUT YOUR CUSTOM LAYOUT
+                            R.layout.event_item_list,
+                            // PUT YOUR CUSTOM CLASS
+                            Event("Maths", "Lesson ${i + 1}"),
+                            // INITIALIZE YOUR VIEW HERE INSIDE DAY SCHEDULE VIEW BASED ON CUSTOM LAYOUT
+                            object : OnInitialization<Event> {
+                                override fun onInitUI(view: View, data: Event) {
+                                    var text = "${data.text}\n${data.time}"
+                                    text = text.replace("null", "")
+                                    view.findViewById<TextView>(R.id.tv_event_date).text = text
+                                }
+                            }
+                    )
+                    updateSchedule(mapUpdated)
+                }
+            }
+        })
+
         binding.msvSchedule.setSchedules(map)
+    }
+
+    private fun updateSchedule(map: HashMap<String, Data<Event>>) {
+        binding.msvSchedule.updateScheduleList(map)
     }
 
     data class Event(

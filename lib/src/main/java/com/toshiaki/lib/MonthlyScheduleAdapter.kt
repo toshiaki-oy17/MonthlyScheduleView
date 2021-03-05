@@ -13,7 +13,7 @@ import java.util.*
 class MonthlyScheduleAdapter<T>(
     private val context: Context,
     private val colors: List<Int>,
-    private val schedules: List<Schedule<T>>
+    private var schedules: List<Schedule<T>>
 ) : RecyclerView.Adapter<MonthlyScheduleAdapter.ViewHolder>() {
 
     /***
@@ -63,6 +63,11 @@ class MonthlyScheduleAdapter<T>(
 
     override fun getItemCount(): Int {
         return schedules.size
+    }
+
+    fun updateSchedule(schedules: List<Schedule<T>>) {
+        this.schedules = schedules
+        notifyDataSetChanged()
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

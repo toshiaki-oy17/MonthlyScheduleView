@@ -2,18 +2,14 @@ package com.toshiaki.lib
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Color
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.toshiaki.lib.databinding.MainMonthViewCalendarBinding
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.HashMap
 
 class MonthlyScheduleView<T> (context: Context, attrs: AttributeSet?) :
         FrameLayout(context, attrs) {
@@ -50,8 +46,10 @@ class MonthlyScheduleView<T> (context: Context, attrs: AttributeSet?) :
     // View Binding
     private var binding: MainMonthViewCalendarBinding = MainMonthViewCalendarBinding.inflate(LayoutInflater.from(context), this, true)
 
-    private var resId = 0
     private var currMap = hashMapOf<String, Data<T>>()
+
+    private lateinit var update: Update
+    private lateinit var adapter: MonthlyScheduleAdapter<T>
 
     init {
         getAttrs(attrs)
@@ -65,7 +63,7 @@ class MonthlyScheduleView<T> (context: Context, attrs: AttributeSet?) :
         startDayView = if (startDayView >= 1 && startDayView <= 7) startDayView else 1
         startMonth = a.getInt(R.styleable.MonthlyScheduleView_start_month_view, c.get(Calendar.MONTH))
         startYear = a.getInt(R.styleable.MonthlyScheduleView_start_year_view, c.get(Calendar.YEAR))
-        isThreeLettersDay = a.getBoolean(R.styleable.MonthlyScheduleView_three_letters_day, false)
+        isThreeLettersDay = a.getBoolean(R.styleable.MonthlyScheduleView_three_letters_day, !context.resources.getBoolean(R.bool.isTablet))
         todayColor = a.getColor(R.styleable.MonthlyScheduleView_today_color, ContextCompat.getColor(context, android.R.color.holo_red_light))
         dayInMonthColor = a.getColor(R.styleable.MonthlyScheduleView_day_in_month_color, ContextCompat.getColor(context, android.R.color.black))
         dayOutMonthColor = a.getColor(R.styleable.MonthlyScheduleView_day_out_month_color, ContextCompat.getColor(context, android.R.color.darker_gray))
@@ -129,16 +127,17 @@ class MonthlyScheduleView<T> (context: Context, attrs: AttributeSet?) :
 
     private fun updateCalendar() {
         binding.tvDayCurrentMonth.text = monthYearFormat.format(currCalendar.time)
-        if (resId != 0) {
-
-        }
+        if (!this.currMap.isNullOrEmpty()) update.onUpdateSchedule(
+                currCalendar.get(Calendar.YEAR),
+                currCalendar.get(Calendar.MONTH)
+        )
     }
 
     fun setSchedules(map: HashMap<String, Data<T>>) {
         this.currMap = map
 
         val colors = listOf(todayColor, dayInMonthColor, dayOutMonthColor)
-        val adapter = MonthlyScheduleAdapter(
+        adapter = MonthlyScheduleAdapter(
                 context,
                 colors,
                 getScheduleList(map)
@@ -175,5 +174,17 @@ class MonthlyScheduleView<T> (context: Context, attrs: AttributeSet?) :
         }
 
         return calendar
+    }
+
+    fun setOnUpdateSchedule(update: Update) {
+        this.update = update
+    }
+
+    fun updateScheduleList(map: HashMap<String, Data<T>>) {
+        adapter.updateSchedule(getScheduleList(map))
+    }
+
+    interface Update {
+        fun onUpdateSchedule(year: Int, month: Int)
     }
 }
