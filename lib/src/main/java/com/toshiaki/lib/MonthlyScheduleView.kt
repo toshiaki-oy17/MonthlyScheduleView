@@ -60,7 +60,7 @@ class MonthlyScheduleView<T> (context: Context, attrs: AttributeSet?) :
         val a = context.obtainStyledAttributes(attrs, R.styleable.MonthlyScheduleView)
         val c = Calendar.getInstance()
         startDayView = a.getInt(R.styleable.MonthlyScheduleView_start_day_view, Calendar.SUNDAY)
-        startDayView = if (startDayView >= 1 && startDayView <= 7) startDayView else 1
+        startDayView = if (startDayView in 1..7) startDayView else 1
         startMonth = a.getInt(R.styleable.MonthlyScheduleView_start_month_view, c.get(Calendar.MONTH))
         startYear = a.getInt(R.styleable.MonthlyScheduleView_start_year_view, c.get(Calendar.YEAR))
         isThreeLettersDay = a.getBoolean(R.styleable.MonthlyScheduleView_three_letters_day, !context.resources.getBoolean(R.bool.isTablet))
