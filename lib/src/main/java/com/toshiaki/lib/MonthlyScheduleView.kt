@@ -24,7 +24,7 @@ class MonthlyScheduleView<T> (context: Context, attrs: AttributeSet?) :
     private var startDayView = Calendar.SUNDAY
     private var startMonth = Calendar.getInstance().get(Calendar.MONTH)
     private var startYear = Calendar.getInstance().get(Calendar.YEAR)
-    private var numberOfWeeks = 5
+    private var numberOfWeeks = 6
     private var isThreeLettersDay = false
 
     /***
@@ -51,8 +51,7 @@ class MonthlyScheduleView<T> (context: Context, attrs: AttributeSet?) :
     private var binding: MainMonthViewCalendarBinding = MainMonthViewCalendarBinding.inflate(LayoutInflater.from(context), this, true)
 
     private var resId = 0
-    private var currMap = hashMapOf<String, T>()
-    private lateinit var init: IInitialize<T>
+    private var currMap = hashMapOf<String, Data<T>>()
 
     init {
         getAttrs(attrs)
@@ -66,8 +65,6 @@ class MonthlyScheduleView<T> (context: Context, attrs: AttributeSet?) :
         startDayView = if (startDayView >= 1 && startDayView <= 7) startDayView else 1
         startMonth = a.getInt(R.styleable.MonthlyScheduleView_start_month_view, c.get(Calendar.MONTH))
         startYear = a.getInt(R.styleable.MonthlyScheduleView_start_year_view, c.get(Calendar.YEAR))
-        numberOfWeeks = a.getInt(R.styleable.MonthlyScheduleView_number_of_weeks, 5)
-        numberOfWeeks = if (numberOfWeeks >= 4 && numberOfWeeks <= 6) numberOfWeeks else 5
         isThreeLettersDay = a.getBoolean(R.styleable.MonthlyScheduleView_three_letters_day, false)
         todayColor = a.getColor(R.styleable.MonthlyScheduleView_today_color, ContextCompat.getColor(context, android.R.color.holo_red_light))
         dayInMonthColor = a.getColor(R.styleable.MonthlyScheduleView_day_in_month_color, ContextCompat.getColor(context, android.R.color.black))
@@ -132,51 +129,38 @@ class MonthlyScheduleView<T> (context: Context, attrs: AttributeSet?) :
 
     private fun updateCalendar() {
         binding.tvDayCurrentMonth.text = monthYearFormat.format(currCalendar.time)
-        if (resId != 0) setSchedules(this.resId, this.currMap, this.init)
+        if (resId != 0) {
+
+        }
     }
 
-    fun setSchedules(resId: Int, map: HashMap<String, T>, init: IInitialize<T>) {
-        this.resId = resId
+    fun setSchedules(map: HashMap<String, Data<T>>) {
         this.currMap = map
-        this.init = init
 
         val colors = listOf(todayColor, dayInMonthColor, dayOutMonthColor)
-        binding.rvDaySchedule.adapter = MonthlyScheduleViewAdapter(
-                resId,
+        val adapter = MonthlyScheduleAdapter(
                 context,
                 colors,
-                getScheduleList(map),
-                object : MonthlyScheduleViewAdapter.IInitialize<T> {
-                    override fun onInitUI(view: View, schedule: Schedule<T>) {
-                        init.onInitUI(view, schedule)
-                    }
-                }
+                getScheduleList(map)
         )
+        binding.rvDaySchedule.adapter = adapter
     }
 
-    fun setScheduleMap(map: HashMap<String, T>) {
-        setSchedules(this.resId, map, this.init)
-    }
-
-    fun setScheduleView(resId: Int, init: IInitialize<T>) {
-        setSchedules(resId, this.currMap, init)
-    }
-
-    private fun getScheduleList(map: HashMap<String, T>): ArrayList<Schedule<T>> {
+    private fun getScheduleList(map: HashMap<String, Data<T>>): ArrayList<Schedule<T>> {
         val tempCurrCalendar = currCalendar.clone() as Calendar
         val tempCalendar = findFirstDate(tempCurrCalendar)
         val calendar = Calendar.getInstance()
         val schedules = arrayListOf<Schedule<T>>()
         for (i in 0 until numberOfWeeks * 7) {
-            val dateString = dateFormat.format(tempCalendar.time)
+            val schedule = Schedule<T>()
+            schedule.date = dateFormat.format(tempCalendar.time)
             val tempMonth = tempCalendar.get(Calendar.MONTH)
             val currMonth = currCalendar.get(Calendar.MONTH)
-            val isMonth = tempMonth == currMonth
-            val isToday = tempCalendar.get(Calendar.YEAR) == calendar.get(Calendar.YEAR) &&
+            schedule.isMonth = tempMonth == currMonth
+            schedule.isToday = tempCalendar.get(Calendar.YEAR) == calendar.get(Calendar.YEAR) &&
                     tempCalendar.get(Calendar.MONTH) == calendar.get(Calendar.MONTH) &&
                     tempCalendar.get(Calendar.DATE) == calendar.get(Calendar.DATE)
-            val data = if (map.containsKey(dateString)) map[dateString] else null
-            val schedule = Schedule(dateString, isToday, isMonth, data)
+            schedule.data = if (map.containsKey(schedule.date)) map[schedule.date] else null
             schedules.add(schedule)
             tempCalendar.add(Calendar.DATE, 1)
         }
@@ -191,9 +175,5 @@ class MonthlyScheduleView<T> (context: Context, attrs: AttributeSet?) :
         }
 
         return calendar
-    }
-
-    interface IInitialize<T> {
-        fun onInitUI(view: View, schedule: Schedule<T>)
     }
 }

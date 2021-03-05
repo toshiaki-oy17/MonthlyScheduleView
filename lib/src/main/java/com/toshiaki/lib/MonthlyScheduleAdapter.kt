@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import java.text.SimpleDateFormat
 import java.util.*
 
-abstract class MonthlyScheduleAdapter<T>(
+class MonthlyScheduleAdapter<T>(
     private val context: Context,
     private val colors: List<Int>,
     private val schedules: List<Schedule<T>>
@@ -51,18 +51,19 @@ abstract class MonthlyScheduleAdapter<T>(
         )
 
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val view = inflater.inflate(getView(), null)
-        holder.customView.addView(view)
-        initUI(view, schedule)
+
+        if (schedule.data != null) {
+            val view = inflater.inflate(schedule.data!!.resId, null)
+            holder.customView.addView(view)
+            if (schedule.data!!.init != null) {
+                schedule.data!!.init!!.onInitUI(view, schedule.data!!.data!!)
+            }
+        }
     }
 
     override fun getItemCount(): Int {
         return schedules.size
     }
-
-    abstract fun getView(): Int
-
-    abstract fun initUI(view: View, schedule: Schedule<T>)
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var vwHighlight: View = itemView.findViewById(R.id.vw_highlight)

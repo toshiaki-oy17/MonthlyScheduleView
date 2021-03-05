@@ -4,9 +4,12 @@ import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.toshiaki.lib.Data
 import com.toshiaki.lib.MonthlyScheduleView
+import com.toshiaki.lib.OnInitialization
 import com.toshiaki.lib.Schedule
 import com.toshiaki.monthviewcalendar.databinding.ActivityMainBinding
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -17,34 +20,32 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val map = hashMapOf<String, Event>()
-        map["2021-03-12"] = Event("Maths", "13:30")
-        map["2021-03-13"] = Event("Biology", "14:30")
-        map["2021-03-14"] = Event("Computer Science", "15:30")
-        map["2021-03-15"] = Event("Physics", "16:30")
-        map["2021-03-16"] = Event("Chemistry", "17:30")
-
-        with(binding) {
-            map["2021-03-12"] = Event("Maths", "13:30")
-            map["2021-03-13"] = Event("Biology", "14:30")
-            map["2021-03-14"] = Event("Computer Science", "15:30")
-            map["2021-03-15"] = Event("Physics", "16:30")
-            map["2021-03-16"] = Event("Chemistry", "17:30")
-
-            msvSchedule.setSchedules(
-                R.layout.event_item_list,
-                map,
-                object : MonthlyScheduleView.IInitialize<Event> {
-                    override fun onInitUI(view: View, schedule: Schedule<Event>) {
-                        val text = "${schedule.data?.text} ${schedule.data?.time}"
-                        view.findViewById<TextView>(R.id.tv_event_date).text = text.replace("null", "")
+        val map = hashMapOf<String, Data<Event>>()
+        val currMonth = Calendar.getInstance().get(Calendar.MONTH) + 1
+        for (i in 0..30) {
+            val iString = if (i + 1 < 10) "0${i + 1}" else "${i + 1}"
+            val currMonthString = if (currMonth < 10) "0$currMonth" else "$currMonth"
+            map["2021-$currMonthString-$iString"] = Data(
+                    // PUT YOUR CUSTOM LAYOUT
+                    R.layout.event_item_list,
+                    // PUT YOUR CUSTOM CLASS
+                    Event("Maths", "Lesson ${i + 1}"),
+                    // INITIALIZE YOUR VIEW HERE INSIDE DAY SCHEDULE VIEW BASED ON CUSTOM LAYOUT
+                    object : OnInitialization<Event> {
+                        override fun onInitUI(view: View, data: Event) {
+                            var text = "${data.text}\n${data.time}"
+                            text = text.replace("null", "")
+                            view.findViewById<TextView>(R.id.tv_event_date).text = text
+                        }
                     }
-                })
+            )
         }
+
+        binding.msvSchedule.setSchedules(map)
     }
 
     data class Event(
-        var text: String,
-        var time: String
+            var text: String,
+            var time: String
     )
 }

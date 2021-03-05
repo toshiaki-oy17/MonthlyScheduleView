@@ -7,7 +7,6 @@
         <attr name="today_color" format="color" />
         <attr name="day_in_month_color" format="color" />
         <attr name="day_out_month_color" format="color" />
-        <attr name="number_of_weeks" format="integer" />
         <attr name="three_letters_day" format="boolean" />
     </declare-styleable>
 </resources>
