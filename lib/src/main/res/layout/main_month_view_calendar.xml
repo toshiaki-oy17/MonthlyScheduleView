@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_header_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <Button
+                android:id="@+id/btn_day_today"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/btn_today"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:text="@string/day_this_month"
+                android:textAllCaps="false"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_day_current_month"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:paddingStart="8dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/btn_day_today"
+                app:layout_constraintStart_toEndOf="@+id/btn_day_today"
+                app:layout_constraintTop_toTopOf="@+id/btn_day_today"
+                tools:text="January 2021" />
+
+            <ImageView
+                android:id="@+id/iv_day_previous_month"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                app:layout_constraintBottom_toBottomOf="@+id/btn_day_today"
+                app:layout_constraintStart_toEndOf="@+id/tv_day_current_month"
+                app:layout_constraintTop_toTopOf="@+id/btn_day_today"
+                app:srcCompat="@drawable/ic_left_chevron" />
+
+            <ImageView
+                android:id="@+id/iv_day_next_month"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                app:layout_constraintBottom_toBottomOf="@+id/iv_day_previous_month"
+                app:layout_constraintStart_toEndOf="@+id/iv_day_previous_month"
+                app:layout_constraintTop_toTopOf="@+id/iv_day_previous_month"
+                app:layout_constraintVertical_bias="0.518"
+                app:srcCompat="@drawable/ic_right_chevron" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_days_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="@+id/cl_header_layout"
+            app:layout_constraintStart_toStartOf="@+id/cl_header_layout"
+            app:layout_constraintTop_toBottomOf="@+id/cl_header_layout">
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:id="@+id/tv_day1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/white_smoke"
+                android:gravity="center"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:text="@string/day_monday"
+                android:textAllCaps="true" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:id="@+id/tv_day2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/white_smoke"
+                android:gravity="center"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:text="@string/day_tuesday"
+                android:textAllCaps="true" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:id="@+id/tv_day3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/white_smoke"
+                android:gravity="center"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:text="@string/day_wednesday"
+                android:textAllCaps="true" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:id="@+id/tv_day4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/white_smoke"
+                android:gravity="center"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:text="@string/day_thursday"
+                android:textAllCaps="true" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:id="@+id/tv_day5"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/white_smoke"
+                android:gravity="center"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:text="@string/day_friday"
+                android:textAllCaps="true" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:id="@+id/tv_day6"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/white_smoke"
+                android:gravity="center"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:text="@string/day_saturday"
+                android:textAllCaps="true" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:id="@+id/tv_day7"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/white_smoke"
+                android:gravity="center"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:text="@string/day_sunday"
+                android:textAllCaps="true" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_day_schedule"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/ll_days_layout"
+            app:layout_constraintStart_toStartOf="@+id/ll_days_layout"
+            app:layout_constraintTop_toBottomOf="@+id/ll_days_layout"
+            app:spanCount="7"
+            tools:itemCount="35"
+            tools:listitem="@layout/month_view_item_list" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

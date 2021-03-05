@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MonthlyScheduleView">
+        <attr name="start_day_view" format="integer" />
+        <attr name="start_month_view" format="integer" />
+        <attr name="start_year_view" format="integer" />
+        <attr name="today_color" format="color" />
+        <attr name="day_in_month_color" format="color" />
+        <attr name="day_out_month_color" format="color" />
+        <attr name="number_of_weeks" format="integer" />
+        <attr name="three_letters_day" format="boolean" />
+    </declare-styleable>
+</resources>
