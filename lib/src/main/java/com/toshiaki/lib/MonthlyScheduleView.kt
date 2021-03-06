@@ -6,13 +6,14 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.toshiaki.lib.databinding.MainMonthViewCalendarBinding
 import java.text.SimpleDateFormat
 import java.util.*
 
 class MonthlyScheduleView<T> (context: Context, attrs: AttributeSet?) :
-        FrameLayout(context, attrs) {
+        ConstraintLayout(context, attrs) {
 
     /***
      * Calendar Day Initialization
@@ -32,6 +33,8 @@ class MonthlyScheduleView<T> (context: Context, attrs: AttributeSet?) :
     private var todayColor = 0
     private var dayInMonthColor = 0
     private var dayOutMonthColor = 0
+
+    private var viewHeight = 0
 
     // List of days
     private var dayTexts = context.resources.getStringArray(R.array.list_of_days)
@@ -53,6 +56,7 @@ class MonthlyScheduleView<T> (context: Context, attrs: AttributeSet?) :
 
     init {
         getAttrs(attrs)
+
     }
 
     @SuppressLint("Recycle")
@@ -67,6 +71,7 @@ class MonthlyScheduleView<T> (context: Context, attrs: AttributeSet?) :
         todayColor = a.getColor(R.styleable.MonthlyScheduleView_today_color, ContextCompat.getColor(context, android.R.color.holo_red_light))
         dayInMonthColor = a.getColor(R.styleable.MonthlyScheduleView_day_in_month_color, ContextCompat.getColor(context, android.R.color.black))
         dayOutMonthColor = a.getColor(R.styleable.MonthlyScheduleView_day_out_month_color, ContextCompat.getColor(context, android.R.color.darker_gray))
+        viewHeight = a.getDimensionPixelSize(R.styleable.MonthlyScheduleView_height_custom_view, getPxFromDp(120))
         a.recycle()
         init()
     }
@@ -140,6 +145,7 @@ class MonthlyScheduleView<T> (context: Context, attrs: AttributeSet?) :
         adapter = MonthlyScheduleAdapter(
                 context,
                 colors,
+                viewHeight,
                 getScheduleList(map)
         )
         binding.rvDaySchedule.adapter = adapter
@@ -182,6 +188,10 @@ class MonthlyScheduleView<T> (context: Context, attrs: AttributeSet?) :
 
     fun updateScheduleList(map: HashMap<String, Data<T>>) {
         adapter.updateSchedule(getScheduleList(map))
+    }
+
+    fun getPxFromDp(dp: Int) : Int {
+        return dp * resources.displayMetrics.density.toInt()
     }
 
     interface Update {

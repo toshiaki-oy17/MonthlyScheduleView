@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.text.SimpleDateFormat
 import java.util.*
@@ -13,6 +15,7 @@ import java.util.*
 class MonthlyScheduleAdapter<T>(
     private val context: Context,
     private val colors: List<Int>,
+    private val viewHeight: Int,
     private var schedules: List<Schedule<T>>
 ) : RecyclerView.Adapter<MonthlyScheduleAdapter.ViewHolder>() {
 
@@ -59,6 +62,10 @@ class MonthlyScheduleAdapter<T>(
                 schedule.data!!.init!!.onInitUI(view, schedule.data!!.data!!)
             }
         }
+
+        val param = holder.itemView.layoutParams as GridLayoutManager.LayoutParams
+        param.height = viewHeight
+        holder.itemView.layoutParams = param
     }
 
     override fun getItemCount(): Int {

@@ -8,5 +8,6 @@
         <attr name="day_in_month_color" format="color" />
         <attr name="day_out_month_color" format="color" />
         <attr name="three_letters_day" format="boolean" />
+        <attr name="height_custom_view" format="dimension" />
     </declare-styleable>
 </resources>

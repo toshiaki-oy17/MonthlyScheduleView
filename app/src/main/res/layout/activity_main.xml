@@ -12,6 +12,7 @@
         android:layout_height="0dp"
         app:start_day_view="1"
         app:today_color="#0000FF"
+        app:height_custom_view="180dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
