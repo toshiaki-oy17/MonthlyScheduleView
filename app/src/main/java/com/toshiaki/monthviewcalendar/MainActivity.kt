@@ -4,11 +4,10 @@ import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.toshiaki.lib.Data
-import com.toshiaki.lib.MonthlyScheduleView
-import com.toshiaki.lib.OnInitialization
+import com.toshiaki.monthlyschedule.Data
+import com.toshiaki.monthlyschedule.MonthlyScheduleView
+import com.toshiaki.monthlyschedule.Initialization
 import com.toshiaki.monthviewcalendar.databinding.ActivityMainBinding
-import java.time.Year
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -32,7 +31,7 @@ class MainActivity : AppCompatActivity() {
                     // PUT YOUR CUSTOM CLASS
                     Event("Maths", "Lesson ${i + 1}"),
                     // INITIALIZE YOUR VIEW HERE INSIDE DAY SCHEDULE VIEW BASED ON CUSTOM LAYOUT
-                    object : OnInitialization<Event> {
+                    object : Initialization<Event> {
                         override fun onInitUI(view: View, data: Event) {
                             var text = "${data.text}\n${data.time}"
                             text = text.replace("null", "")
@@ -54,7 +53,7 @@ class MainActivity : AppCompatActivity() {
                             // PUT YOUR DATA CLASS
                             Event("Maths", "Lesson ${i + 1}"),
                             // INITIALIZE YOUR VIEW HERE INSIDE DAY SCHEDULE VIEW BASED ON CUSTOM LAYOUT
-                            object : OnInitialization<Event> {
+                            object : Initialization<Event> {
                                 override fun onInitUI(view: View, data: Event) {
                                     var text = "${data.text}\n${data.time}"
                                     text = text.replace("null", "")

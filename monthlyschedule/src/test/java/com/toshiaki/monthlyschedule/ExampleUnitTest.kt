@@ -1,4 +1,4 @@
-package com.toshiaki.lib
+package com.toshiaki.monthlyschedule
 
 import org.junit.Test
 
