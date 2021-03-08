@@ -8,6 +8,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.toshiaki.monthlyschedule.databinding.MonthViewItemListBinding
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -25,26 +26,26 @@ class MonthlyScheduleAdapter<T>(
      * [2] = If the date is outside current month
      */
 
+    private lateinit var binding: MonthViewItemListBinding
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.US)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val itemView = LayoutInflater.from(parent.context)
-            .inflate(R.layout.month_view_item_list, parent, false)
-        return ViewHolder(itemView)
+        binding = MonthViewItemListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding.root)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val schedule = schedules[holder.adapterPosition]
 
-        holder.vwHighlight.visibility = if (schedule.isToday) View.VISIBLE else View.INVISIBLE
-        holder.vwHighlight.setBackgroundColor(colors[0])
+        binding.vwHighlight.visibility = if (schedule.isToday) View.VISIBLE else View.INVISIBLE
+        binding.vwHighlight.setBackgroundColor(colors[0])
 
         val date = dateFormat.parse(schedule.date)
         val calendar = Calendar.getInstance()
         calendar.time = date!!
 
-        holder.tvDate.text = "${calendar.get(Calendar.DATE)}"
-        holder.tvDate.setTextColor(
+        binding.tvDate.text = "${calendar.get(Calendar.DATE)}"
+        binding.tvDate.setTextColor(
             when {
                 schedule.isToday -> colors[0]
                 schedule.isMonth -> colors[1]
@@ -56,19 +57,27 @@ class MonthlyScheduleAdapter<T>(
 
         if (schedule.data != null) {
             val view = inflater.inflate(schedule.data!!.resId, null)
-            holder.customView.addView(view)
+            binding.rlCustomView.addView(view)
             if (schedule.data!!.init != null) {
                 schedule.data!!.init!!.onInitUI(view, schedule.data!!.data!!)
             }
         }
 
-        val param = holder.itemView.layoutParams as GridLayoutManager.LayoutParams
+        val param = binding.root.layoutParams as GridLayoutManager.LayoutParams
         param.height = viewHeight
-        holder.itemView.layoutParams = param
+        binding.root.layoutParams = param
     }
 
     override fun getItemCount(): Int {
         return schedules.size
+    }
+
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return position
     }
 
     fun updateSchedule(schedules: List<Schedule<T>>) {
@@ -76,9 +85,5 @@ class MonthlyScheduleAdapter<T>(
         notifyDataSetChanged()
     }
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var vwHighlight: View = itemView.findViewById(R.id.vw_highlight)
-        var tvDate: TextView = itemView.findViewById(R.id.tv_date)
-        var customView: RelativeLayout = itemView.findViewById(R.id.rl_custom_view)
-    }
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 }

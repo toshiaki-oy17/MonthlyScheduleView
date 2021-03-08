@@ -16,6 +16,14 @@ class MonthlyPagerAdapter (private var fragments: List<Fragment>,
         return fragments[position]
     }
 
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return position
+    }
+
     fun updateFragments(fragments: List<Fragment>) {
         this.fragments = fragments
         notifyDataSetChanged()

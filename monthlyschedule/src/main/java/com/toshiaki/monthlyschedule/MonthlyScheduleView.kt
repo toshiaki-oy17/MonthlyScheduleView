@@ -9,6 +9,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.viewpager2.widget.ViewPager2
 import com.toshiaki.monthlyschedule.databinding.MainMonthViewCalendarBinding
 import java.text.SimpleDateFormat
 import java.util.*
@@ -43,7 +44,7 @@ class MonthlyScheduleView<T> (context: Context, attrs: AttributeSet?) :
 
     // View Binding
     private var binding: MainMonthViewCalendarBinding = MainMonthViewCalendarBinding.inflate(LayoutInflater.from(context), this, true)
-
+    // Map Object
     private var currMap = hashMapOf<String, Data<T>>()
 
     private lateinit var update: Update
@@ -97,10 +98,6 @@ class MonthlyScheduleView<T> (context: Context, attrs: AttributeSet?) :
 
     private fun updateCalendar() {
         binding.tvDayCurrentMonth.text = monthYearFormat.format(currCalendar.time)
-//        if (!this.currMap.isNullOrEmpty()) update.onUpdateSchedule(
-//                currCalendar.get(Calendar.YEAR),
-//                currCalendar.get(Calendar.MONTH)
-//        )
     }
 
     fun setSchedules(map: HashMap<String, Data<T>>) {
@@ -124,6 +121,13 @@ class MonthlyScheduleView<T> (context: Context, attrs: AttributeSet?) :
         val fa = context as FragmentActivity
         val adapter = MonthlyPagerAdapter(fragments, fa)
         binding.vpDaysLayout.adapter = adapter
+        binding.vpDaysLayout.currentItem = 1
+
+        binding.vpDaysLayout.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+
+            }
+        })
     }
 
     fun setOnUpdateSchedule(update: Update) {
