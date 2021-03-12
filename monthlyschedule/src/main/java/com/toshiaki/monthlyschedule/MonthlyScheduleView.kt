@@ -4,18 +4,17 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.widget.ViewPager2
 import com.toshiaki.monthlyschedule.databinding.MainMonthViewCalendarBinding
 import java.text.SimpleDateFormat
 import java.util.*
 
-class MonthlyScheduleView<T> (context: Context, attrs: AttributeSet?) :
-        ConstraintLayout(context, attrs) {
+class MonthlyScheduleView<T>(context: Context, attrs: AttributeSet?) :
+    ConstraintLayout(context, attrs) {
 
     /***
      * Calendar Day Initialization
@@ -25,7 +24,7 @@ class MonthlyScheduleView<T> (context: Context, attrs: AttributeSet?) :
     private var startYear = Calendar.getInstance().get(Calendar.YEAR)
     private var isThreeLettersDay = false
 
-    /***
+    /**
      * Colors for:
      * 1.) Today highlights,
      * 2.) Day inside current month,
@@ -35,17 +34,26 @@ class MonthlyScheduleView<T> (context: Context, attrs: AttributeSet?) :
     private var dayInMonthColor = 0
     private var dayOutMonthColor = 0
 
+    /**
+     * INSERT CUSTOM VIEW'S HEIGHT
+     */
     private var viewHeight = 0
 
     // Calendar handler
     private var currCalendar = Calendar.getInstance()
+
     // Simple Date Format
     private val monthYearFormat = SimpleDateFormat("MMMM yyyy", Locale.US)
 
     // View Binding
-    private var binding: MainMonthViewCalendarBinding = MainMonthViewCalendarBinding.inflate(LayoutInflater.from(context), this, true)
+    private var binding: MainMonthViewCalendarBinding =
+        MainMonthViewCalendarBinding.inflate(LayoutInflater.from(context), this, true)
+
     // Map Object
     private var currMap = hashMapOf<String, Data<T>>()
+
+    // Initialize Fragment List
+    private val bundles = arrayListOf<Bundle>()
 
     private lateinit var update: Update
 
@@ -59,13 +67,29 @@ class MonthlyScheduleView<T> (context: Context, attrs: AttributeSet?) :
         val c = Calendar.getInstance()
         startDayView = a.getInt(R.styleable.MonthlyScheduleView_start_day_view, Calendar.SUNDAY)
         startDayView = if (startDayView in 1..7) startDayView else 1
-        startMonth = a.getInt(R.styleable.MonthlyScheduleView_start_month_view, c.get(Calendar.MONTH))
+        startMonth =
+            a.getInt(R.styleable.MonthlyScheduleView_start_month_view, c.get(Calendar.MONTH))
         startYear = a.getInt(R.styleable.MonthlyScheduleView_start_year_view, c.get(Calendar.YEAR))
-        isThreeLettersDay = a.getBoolean(R.styleable.MonthlyScheduleView_three_letters_day, !context.resources.getBoolean(R.bool.isTablet))
-        todayColor = a.getColor(R.styleable.MonthlyScheduleView_today_color, ContextCompat.getColor(context, android.R.color.holo_red_light))
-        dayInMonthColor = a.getColor(R.styleable.MonthlyScheduleView_day_in_month_color, ContextCompat.getColor(context, android.R.color.black))
-        dayOutMonthColor = a.getColor(R.styleable.MonthlyScheduleView_day_out_month_color, ContextCompat.getColor(context, android.R.color.darker_gray))
-        viewHeight = a.getDimensionPixelSize(R.styleable.MonthlyScheduleView_height_custom_view, getPxFromDp(120))
+        isThreeLettersDay = a.getBoolean(
+            R.styleable.MonthlyScheduleView_three_letters_day,
+            !context.resources.getBoolean(R.bool.isTablet)
+        )
+        todayColor = a.getColor(
+            R.styleable.MonthlyScheduleView_today_color,
+            ContextCompat.getColor(context, android.R.color.holo_red_light)
+        )
+        dayInMonthColor = a.getColor(
+            R.styleable.MonthlyScheduleView_day_in_month_color,
+            ContextCompat.getColor(context, android.R.color.black)
+        )
+        dayOutMonthColor = a.getColor(
+            R.styleable.MonthlyScheduleView_day_out_month_color,
+            ContextCompat.getColor(context, android.R.color.darker_gray)
+        )
+        viewHeight = a.getDimensionPixelSize(
+            R.styleable.MonthlyScheduleView_height_custom_view,
+            getPxFromDp(120)
+        )
         a.recycle()
         init()
     }
@@ -104,28 +128,27 @@ class MonthlyScheduleView<T> (context: Context, attrs: AttributeSet?) :
         this.currMap = map
 
         val colors = arrayListOf(todayColor, dayInMonthColor, dayOutMonthColor)
-        val fragments = mutableListOf<Fragment>()
 
-        for (i in -1..1) {
+        for (i in -2..2) {
             val bundle = Bundle()
-            bundle.putInt(DatesViewFragment.iStartMonth, startMonth + i)
-            bundle.putInt(DatesViewFragment.iStartYear, startYear)
-            bundle.putInt(DatesViewFragment.iStartDayView, startDayView)
-            bundle.putBoolean(DatesViewFragment.iIsThreeLettersDay, isThreeLettersDay)
-            bundle.putInt(DatesViewFragment.iViewHeight, viewHeight)
-            bundle.putIntegerArrayList(DatesViewFragment.iColors, colors)
-            bundle.putSerializable(DatesViewFragment.iMap, map)
-            fragments.add(DatesViewFragment.getInstance<T>(bundle))
+            bundle.putInt(MonthlyPagerAdapter.iStartMonth, startMonth + i)
+            bundle.putInt(MonthlyPagerAdapter.iStartYear, startYear)
+            bundle.putInt(MonthlyPagerAdapter.iStartDayView, startDayView)
+            bundle.putBoolean(MonthlyPagerAdapter.iIsThreeLettersDay, isThreeLettersDay)
+            bundle.putInt(MonthlyPagerAdapter.iViewHeight, viewHeight)
+            bundle.putIntegerArrayList(MonthlyPagerAdapter.iColors, colors)
+            bundle.putSerializable(MonthlyPagerAdapter.iMap, map)
+            bundles.add(bundle)
         }
 
-        val fa = context as FragmentActivity
-        val adapter = MonthlyPagerAdapter(fragments, fa)
+        val adapter = MonthlyPagerAdapter<T>(context, bundles)
         binding.vpDaysLayout.adapter = adapter
-        binding.vpDaysLayout.currentItem = 1
+        binding.vpDaysLayout.currentItem = (bundles.size - 1) / 2
 
-        binding.vpDaysLayout.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback() {
+        binding.vpDaysLayout.registerOnPageChangeCallback(object :
+            ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
-
+                Log.d("VIEW PAGER POSITION", position.toString())
             }
         })
     }
@@ -134,7 +157,7 @@ class MonthlyScheduleView<T> (context: Context, attrs: AttributeSet?) :
         this.update = update
     }
 
-    private fun getPxFromDp(dp: Int) : Int {
+    private fun getPxFromDp(dp: Int): Int {
         return dp * resources.displayMetrics.density.toInt()
     }
 
