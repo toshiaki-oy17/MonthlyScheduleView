@@ -14,6 +14,12 @@ import com.toshiaki.monthlyschedule.model.Schedule
 import java.text.SimpleDateFormat
 import java.util.*
 
+/**
+ *
+ * CREATED BY yosualeonardo ON 3/18/21
+ *
+ */
+
 class MonthlyPagerAdapter<T> (private val context: Context, private var bundles: List<Bundle>
 ) : RecyclerView.Adapter<MonthlyPagerAdapter<T>.ViewHolder>() {
 

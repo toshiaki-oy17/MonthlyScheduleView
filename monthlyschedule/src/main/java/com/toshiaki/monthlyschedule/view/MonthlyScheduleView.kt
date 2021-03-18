@@ -18,6 +18,11 @@ import com.toshiaki.monthlyschedule.model.Data
 import java.text.SimpleDateFormat
 import java.util.*
 
+/**
+ *
+ * CREATED BY yosualeonardo ON 3/18/21
+ *
+ */
 
 @Suppress("SameParameterValue")
 class MonthlyScheduleView<T>(context: Context, attrs: AttributeSet?) :

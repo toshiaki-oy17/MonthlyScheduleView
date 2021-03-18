@@ -11,6 +11,12 @@ import com.toshiaki.monthlyschedule.model.Schedule
 import java.text.SimpleDateFormat
 import java.util.*
 
+/**
+ *
+ * CREATED BY yosualeonardo ON 3/18/21
+ *
+ */
+
 class MonthlyScheduleAdapter<T>(
     private val context: Context,
     private val colors: List<Int>,
