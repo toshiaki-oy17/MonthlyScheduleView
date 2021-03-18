@@ -9,5 +9,7 @@
         <attr name="day_out_month_color" format="color" />
         <attr name="three_letters_day" format="boolean" />
         <attr name="height_custom_view" format="dimension" />
+        <attr name="min_year" format="integer" />
+        <attr name="max_year" format="integer" />
     </declare-styleable>
 </resources>

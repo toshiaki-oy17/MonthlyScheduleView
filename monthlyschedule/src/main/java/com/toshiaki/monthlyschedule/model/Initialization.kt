@@ -1,4 +1,4 @@
-package com.toshiaki.monthlyschedule
+package com.toshiaki.monthlyschedule.model
 
 import android.view.View
 

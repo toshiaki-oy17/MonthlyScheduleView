@@ -14,14 +14,13 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <Button
-            android:id="@+id/btn_day_today"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="wrap_content"
-            android:layout_height="36dp"
+            android:id="@+id/btn_month"
+            android:layout_width="144dp"
+            android:layout_height="48dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="12dp"
             android:layout_marginBottom="12dp"
-            android:background="@drawable/btn_today"
+            android:background="@drawable/background_button"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
             android:text="@string/day_this_month"
@@ -29,43 +28,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/tv_day_current_month"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:paddingStart="8dp"
-            android:paddingTop="8dp"
-            android:paddingEnd="8dp"
-            android:paddingBottom="8dp"
-            app:layout_constraintBottom_toBottomOf="@+id/btn_day_today"
-            app:layout_constraintStart_toEndOf="@+id/btn_day_today"
-            app:layout_constraintTop_toTopOf="@+id/btn_day_today"
-            tools:text="January 2021" />
-
-        <ImageView
-            android:id="@+id/iv_day_previous_month"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/chevron"
-            android:padding="16dp"
-            app:layout_constraintBottom_toBottomOf="@+id/btn_day_today"
-            app:layout_constraintStart_toEndOf="@+id/tv_day_current_month"
-            app:layout_constraintTop_toTopOf="@+id/btn_day_today"
-            app:srcCompat="@drawable/ic_left_chevron" />
-
-        <ImageView
-            android:id="@+id/iv_day_next_month"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/chevron"
-            android:padding="16dp"
-            app:layout_constraintBottom_toBottomOf="@+id/iv_day_previous_month"
-            app:layout_constraintStart_toEndOf="@+id/iv_day_previous_month"
-            app:layout_constraintTop_toTopOf="@+id/iv_day_previous_month"
-            app:layout_constraintVertical_bias="0.518"
-            app:srcCompat="@drawable/ic_right_chevron" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

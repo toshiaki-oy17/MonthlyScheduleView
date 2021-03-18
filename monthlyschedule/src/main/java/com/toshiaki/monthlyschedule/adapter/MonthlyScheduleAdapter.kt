@@ -1,14 +1,13 @@
-package com.toshiaki.monthlyschedule
+package com.toshiaki.monthlyschedule.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RelativeLayout
-import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.toshiaki.monthlyschedule.databinding.MonthViewItemListBinding
+import com.toshiaki.monthlyschedule.model.Schedule
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -78,11 +77,6 @@ class MonthlyScheduleAdapter<T>(
 
     override fun getItemViewType(position: Int): Int {
         return position
-    }
-
-    fun updateSchedule(schedules: List<Schedule<T>>) {
-        this.schedules = schedules
-        notifyDataSetChanged()
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)

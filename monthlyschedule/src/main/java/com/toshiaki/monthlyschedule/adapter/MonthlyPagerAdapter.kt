@@ -1,4 +1,4 @@
-package com.toshiaki.monthlyschedule
+package com.toshiaki.monthlyschedule.adapter
 
 import android.content.Context
 import android.os.Bundle
@@ -7,7 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.toshiaki.monthlyschedule.R
 import com.toshiaki.monthlyschedule.databinding.LayoutDatesViewBinding
+import com.toshiaki.monthlyschedule.model.Data
+import com.toshiaki.monthlyschedule.model.Schedule
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -16,7 +19,9 @@ class MonthlyPagerAdapter<T> (private val context: Context, private var bundles:
 
     private lateinit var binding: LayoutDatesViewBinding
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val binding = LayoutDatesViewBinding.bind(itemView)
+    }
 
     companion object {
         const val iStartMonth = "I_START_MONTH"
@@ -36,60 +41,62 @@ class MonthlyPagerAdapter<T> (private val context: Context, private var bundles:
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val bundle = bundles[holder.adapterPosition]
+        with(holder) {
+            val bundle = bundles[holder.adapterPosition]
 
-        val currCalendar = Calendar.getInstance()
-        val dayTexts = context.resources.getStringArray(R.array.list_of_days)
-        val startMonth = bundle.getInt(iStartMonth)
-        val startYear = bundle.getInt(iStartYear)
-        val startDayView = bundle.getInt(iStartDayView)
-        val isThreeLettersDay = bundle.getBoolean(iIsThreeLettersDay)
-        val viewHeight = bundle.getInt(iViewHeight)
-        val colors = bundle.getIntegerArrayList(iColors)!!
-        val map = bundle.getSerializable(iMap) as HashMap<String, Data<T>>
-        
-        val dayTextViews: List<TextView> = listOf(
-            binding.tvDay1,
-            binding.tvDay2,
-            binding.tvDay3,
-            binding.tvDay4,
-            binding.tvDay5,
-            binding.tvDay6,
-            binding.tvDay7,
-        )
+            val currCalendar = Calendar.getInstance()
+            val dayTexts = context.resources.getStringArray(R.array.list_of_days)
+            val startMonth = bundle.getInt(iStartMonth)
+            val startYear = bundle.getInt(iStartYear)
+            val startDayView = bundle.getInt(iStartDayView)
+            val isThreeLettersDay = bundle.getBoolean(iIsThreeLettersDay)
+            val viewHeight = bundle.getInt(iViewHeight)
+            val colors = bundle.getIntegerArrayList(iColors)!!
+            val map = bundle.getSerializable(iMap) as HashMap<String, Data<T>>
 
-        /***
-         * Initialize Day Text Views
-         * Based on start_day_view's input
-         */
-        for (i in dayTextViews.indices) {
-            dayTextViews[i].maxLines = 1
+            val dayTextViews: List<TextView> = listOf(
+                    binding.tvDay1,
+                    binding.tvDay2,
+                    binding.tvDay3,
+                    binding.tvDay4,
+                    binding.tvDay5,
+                    binding.tvDay6,
+                    binding.tvDay7,
+            )
 
-            val text = dayTexts?.get((i + startDayView - 1) % dayTextViews.size)
-            dayTextViews[i].text = if (isThreeLettersDay) text!!.take(3) else text
+            /***
+             * Initialize Day Text Views
+             * Based on start_day_view's input
+             */
+            for (i in dayTextViews.indices) {
+                dayTextViews[i].maxLines = 1
+
+                val text = dayTexts[(i + startDayView - 1) % dayTextViews.size]
+                dayTextViews[i].text = if (isThreeLettersDay) text!!.take(3) else text
+            }
+
+            /***
+             * Initialize Calendar
+             * Based on start_year and start_month
+             */
+            currCalendar.set(Calendar.YEAR, startYear)
+            currCalendar.set(Calendar.MONTH, startMonth)
+
+            val adapter = MonthlyScheduleAdapter(
+                    context,
+                    colors,
+                    viewHeight,
+                    getScheduleList(map, currCalendar, startDayView)
+            )
+
+            binding.rvDaySchedule.adapter = adapter
         }
-
-        /***
-         * Initialize Calendar
-         * Based on start_year and start_month
-         */
-        currCalendar.set(Calendar.YEAR, startYear)
-        currCalendar.set(Calendar.MONTH, startMonth)
-
-        val adapter = MonthlyScheduleAdapter(
-            context,
-            colors,
-            viewHeight,
-            getScheduleList(map, currCalendar, startDayView)
-        )
-
-        binding.rvDaySchedule.adapter = adapter
     }
 
     private fun getScheduleList(
-        map: HashMap<String, Data<T>>,
-        currCalendar: Calendar,
-        startDayView: Int
+            map: HashMap<String, Data<T>>,
+            currCalendar: Calendar,
+            startDayView: Int
     ): ArrayList<Schedule<T>> {
         val tempCurrCalendar = currCalendar.clone() as Calendar
         val tempCalendar = findFirstDate(tempCurrCalendar, startDayView)
@@ -121,7 +128,5 @@ class MonthlyPagerAdapter<T> (private val context: Context, private var bundles:
         return calendar
     }
 
-    override fun getItemCount(): Int {
-        return bundles.size
-    }
+    override fun getItemCount(): Int = bundles.size
 }

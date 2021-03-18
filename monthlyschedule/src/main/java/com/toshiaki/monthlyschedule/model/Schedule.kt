@@ -1,4 +1,4 @@
-package com.toshiaki.monthlyschedule
+package com.toshiaki.monthlyschedule.model
 
 data class Schedule<T>(
     var date: String = "",

@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.toshiaki.monthlyschedule.Data
-import com.toshiaki.monthlyschedule.Initialization
+import com.toshiaki.monthlyschedule.model.Data
+import com.toshiaki.monthlyschedule.model.Initialization
 import com.toshiaki.monthviewcalendar.databinding.ActivityMainBinding
 import java.util.*
 
@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
             /**
              * INPUT YOUR CUSTOM OBJECT
              */
-            data.data = Event("Maths", "Lesson ${i + 1}")
+            data.data = Event("Maths Lesson ${i + 1}", "${i % 24}:30")
 
             /**
              * INSERT YOUR CUSTOM OBJECT (CLASS)

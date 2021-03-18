@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <com.toshiaki.monthlyschedule.MonthlyScheduleView
+    <com.toshiaki.monthlyschedule.view.MonthlyScheduleView
         android:id="@+id/msv_schedule"
         android:layout_width="0dp"
         android:layout_height="0dp"
