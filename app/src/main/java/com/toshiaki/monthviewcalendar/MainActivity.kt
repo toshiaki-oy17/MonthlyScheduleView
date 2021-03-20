@@ -45,8 +45,7 @@ class MainActivity : AppCompatActivity() {
              */
             data.init = object : Initialization<Event> {
                 override fun onInitUI(view: View, data: Event) {
-                    var text = "${data.text}\n${data.time}"
-                    text = text.replace("null", "")
+                    val text = "${data.text}\n${data.time}"
                     view.findViewById<TextView>(R.id.tv_event_date).text = text
                 }
             }
@@ -63,7 +62,7 @@ class MainActivity : AppCompatActivity() {
              */
             val iString = if (i + 1 < 10) "0${i + 1}" else "${i + 1}"
             val currMonthString = if (currMonth < 10) "0$currMonth" else "$currMonth"
-            map["2021-$currMonthString-$iString"] = data
+            map["2021-$currMonthString-$iString"] = data // yyyy-MM-dd
         }
 
         binding.msvSchedule.setSchedules(map)

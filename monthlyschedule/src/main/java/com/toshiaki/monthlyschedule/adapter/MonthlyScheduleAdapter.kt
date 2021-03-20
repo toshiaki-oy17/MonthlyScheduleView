@@ -42,35 +42,37 @@ class MonthlyScheduleAdapter<T>(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val schedule = schedules[holder.adapterPosition]
 
-        binding.vwHighlight.visibility = if (schedule.isToday) View.VISIBLE else View.INVISIBLE
-        binding.vwHighlight.setBackgroundColor(colors[0])
+        with (holder) {
+            binding.vwHighlight.visibility = if (schedule.isToday) View.VISIBLE else View.INVISIBLE
+            binding.vwHighlight.setBackgroundColor(colors[0])
 
-        val date = dateFormat.parse(schedule.date)
-        val calendar = Calendar.getInstance()
-        calendar.time = date!!
+            val date = dateFormat.parse(schedule.date)
+            val calendar = Calendar.getInstance()
+            calendar.time = date!!
 
-        binding.tvDate.text = "${calendar.get(Calendar.DATE)}"
-        binding.tvDate.setTextColor(
-            when {
-                schedule.isToday -> colors[0]
-                schedule.isMonth -> colors[1]
-                else -> colors[2]
+            binding.tvDate.text = "${calendar.get(Calendar.DATE)}"
+            binding.tvDate.setTextColor(
+                    when {
+                        schedule.isToday -> colors[0]
+                        schedule.isMonth -> colors[1]
+                        else -> colors[2]
+                    }
+            )
+
+            val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+
+            if (schedule.data != null) {
+                val view = inflater.inflate(schedule.data!!.resId, null)
+                binding.rlCustomView.addView(view)
+                if (schedule.data!!.init != null) {
+                    schedule.data!!.init!!.onInitUI(view, schedule.data!!.data!!)
+                }
             }
-        )
 
-        val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-
-        if (schedule.data != null) {
-            val view = inflater.inflate(schedule.data!!.resId, null)
-            binding.rlCustomView.addView(view)
-            if (schedule.data!!.init != null) {
-                schedule.data!!.init!!.onInitUI(view, schedule.data!!.data!!)
-            }
+            val param = binding.root.layoutParams as GridLayoutManager.LayoutParams
+            param.height = viewHeight
+            binding.root.layoutParams = param
         }
-
-        val param = binding.root.layoutParams as GridLayoutManager.LayoutParams
-        param.height = viewHeight
-        binding.root.layoutParams = param
     }
 
     override fun getItemCount(): Int {
@@ -85,5 +87,7 @@ class MonthlyScheduleAdapter<T>(
         return position
     }
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val binding = MonthViewItemListBinding.bind(itemView)
+    }
 }

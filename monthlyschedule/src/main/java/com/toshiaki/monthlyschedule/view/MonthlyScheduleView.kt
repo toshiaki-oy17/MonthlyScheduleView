@@ -8,8 +8,11 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.DatePicker
+import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.children
 import androidx.viewpager2.widget.ViewPager2
 import com.toshiaki.monthlyschedule.R
 import com.toshiaki.monthlyschedule.adapter.MonthlyPagerAdapter
@@ -35,10 +38,8 @@ class MonthlyScheduleView<T>(context: Context, attrs: AttributeSet?) :
     private var startMonth = Calendar.getInstance().get(Calendar.MONTH)
     private var startYear = Calendar.getInstance().get(Calendar.YEAR)
     private var isThreeLettersDay = false
-    private val minMonth = 0
-    private var minYear = 1900
-    private val maxMonth = 11
-    private var maxYear = 2100
+    private var minYear = 0
+    private var maxYear = 0
 
     /**
      * Colors for:
@@ -54,7 +55,13 @@ class MonthlyScheduleView<T>(context: Context, attrs: AttributeSet?) :
      * INSERT CUSTOM VIEW'S HEIGHT
      */
     private var viewHeight = 0
+
+    /**
+     * DEFAULT VALUES
+     */
     private val defaultHeight = 120
+    private val defaultMinYear = 1900
+    private val defaultMaxYear = 2100
 
     // Calendar List for Initialization
     private val myList = mutableListOf<MonthYear>()
@@ -110,18 +117,18 @@ class MonthlyScheduleView<T>(context: Context, attrs: AttributeSet?) :
                 R.styleable.MonthlyScheduleView_height_custom_view,
                 getPxFromDp(defaultHeight)
         )
-        minYear = a.getInt(R.styleable.MonthlyScheduleView_min_year, 1900)
-        maxYear = a.getInt(R.styleable.MonthlyScheduleView_max_year, 2100)
+        minYear = a.getInt(R.styleable.MonthlyScheduleView_min_year, defaultMinYear)
+        maxYear = a.getInt(R.styleable.MonthlyScheduleView_max_year, defaultMaxYear)
         a.recycle()
         init()
     }
 
     private fun init() {
         val c = Calendar.getInstance()
-        c.set(Calendar.MONTH, minMonth)
+        c.set(Calendar.MONTH, 0)
         c.set(Calendar.YEAR, minYear)
         var index = 0
-        while (c.get(Calendar.MONTH) != maxMonth && c.get(Calendar.YEAR) != maxYear) {
+        while (c.get(Calendar.YEAR) != maxYear + 1) {
             myList.add(MonthYear(index, c.get(Calendar.YEAR), c.get(Calendar.MONTH)))
             c.add(Calendar.MONTH, 1)
             index++
@@ -226,7 +233,7 @@ class MonthlyScheduleView<T>(context: Context, attrs: AttributeSet?) :
 
     private fun pickMonthYear(): DatePickerDialog {
         val dpd = DatePickerDialog(
-                context, { _, year, month, _ ->
+                context, R.style.MySpinnerDatePickerStyle, { _, year, month, _ ->
             val my = MonthYear(-1, year, month)
             val position = myPosition(myList, my, 0, myList.size)
             binding.vpDaysLayout.setCurrentItem(position, false)
@@ -235,23 +242,34 @@ class MonthlyScheduleView<T>(context: Context, attrs: AttributeSet?) :
                 currCalendar.get(Calendar.MONTH),
                 currCalendar.get(Calendar.DAY_OF_MONTH))
 
+        dpd.datePicker.calendarViewShown = false
+
         try {
             val datePickerDialogFields = dpd.javaClass.declaredFields
             for (datePickerDialogField in datePickerDialogFields) {
                 if (datePickerDialogField.name == "mDatePicker") {
                     datePickerDialogField.isAccessible = true
                     val datePicker = datePickerDialogField[dpd] as DatePicker
-                    val datePickerFields = datePickerDialogField.type.declaredFields
-                    for (datePickerField in datePickerFields) {
-                        if ("mDaySpinner" == datePickerField.name) {
-                            datePickerField.isAccessible = true
-                            val dayPicker = datePickerField[datePicker]
-                            (dayPicker as View).visibility = View.GONE
+                    val datePickerView = datePicker.children.iterator().next() as LinearLayout
+                    val datePickerChildrenViews = datePickerView.children.iterator()
+                    while (datePickerChildrenViews.hasNext()) {
+                        val view = datePickerChildrenViews.next() as LinearLayout
+                        if (view.context.resources.getResourceEntryName(view.id) == "pickers") {
+                            val pickerChildrenViews = view.children.iterator()
+                            while (pickerChildrenViews.hasNext()) {
+                                val view2 = pickerChildrenViews.next() as LinearLayout
+                                if (view2.context.resources.getResourceEntryName(view2.id) == "day") {
+                                    view2.visibility = View.GONE
+                                    break
+                                }
+                            }
+                            break
                         }
                     }
                 }
             }
         } catch (ex: Exception) {
+            Toast.makeText(context, ex.localizedMessage, Toast.LENGTH_LONG).show()
         }
 
         return dpd
